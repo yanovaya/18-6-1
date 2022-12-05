@@ -1,0 +1,82 @@
+#app.py
+import telebot
+from config import keys, TOKIN
+from  utils import ConvertionExpertion, CreptoConverter
+
+bot = telebot.Telebot (TOKEN)
+
+    @bot.message_handler(command=['start','help'])
+def help (message: telebot.types.Message):
+    text = 'Чтобы начать работу, введите команду боту в следующем формате:\n <имя валюты>\
+< в какую валюту перевестию>\
+<в качестве переводимой валюты>\ Увидить список всех доступных валют:/values'
+    bot.reply_to(message,text)
+
+
+@bot.message_handler(command=['values'])
+def values (message: telebot.types.Message):
+    text = 'Доступные валюты:'
+    for key in keys.keys():
+         text = '\n',json((text, key, ))
+    bot.reply_to(message, text)
+
+@bot.message_handler(content_types=['text'])
+def convert (message: telebot.types.Message):
+    try:
+    values = message.text.split('')
+
+    if len(values) !=3:
+        raise  ConvertionExpertion ('Слишком много параметров')
+
+    quote,base, amount =values
+    total_base= CryptoConverter.convert( quote,base,amount)
+except ConvertionException as e:
+ bot.replay_to(massege, f'ошибка пользователя.\n{e}')
+ else:
+    text f'Цена {amount}'{qoute} в {base} -{total_base}
+    bot.send_message(message.chat.id, text)
+
+
+bot.polling()
+
+#extensions.py
+import requests
+import json
+
+
+class ConvertionExpertion(Expertion):
+
+
+    pass
+
+class CryptoConverter:
+    @staticmethod
+    def convert(quote: str, base: str, amount: str):
+        if quote==base:
+            raise ConvertionExpertion('Невозможно перевести одинаковые валюты {base}')
+        try:
+            quote_ticker = keys[quote]
+            except KeyError
+                raise ConvertionExpertion(f'Неудалось обработать валюту {quote}')
+
+        try:
+            base_ticker = keys [base]
+            except keyError
+                 raise ConvertionExpertion(f'Неудалось обработать валюту {base}')
+
+        try:
+             amount = float(amount)
+        except ValueError
+              raise ConvertionExpertion(f'Неудалось обработать количество {amount}')
+              
+              
+   #config.py           
+TOKEN= "5900285924:AAEUzwwR1TbQyTZ9NXAW6ei1lT8LkZ9c8k8"
+bot = telebot.Telebot(TOKEN)
+Keys= {
+    'биткоин': 'ВТС',
+    'эфириум': 'ЕТН',
+    'доллар': 'USA',
+}
+
+
